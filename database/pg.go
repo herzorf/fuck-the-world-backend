@@ -22,17 +22,18 @@ func Connect() {
 	// 打开数据库连接
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatal("Error opening connection to the database: ", err)
+		log.Fatal("数据库连接失败", err)
 	}
 	DB = db
-	defer Close()
-
 	// 测试连接
 	err = db.Ping()
 	if err != nil {
-		log.Fatal("Error connecting to the database: ", err)
+		log.Fatal("数据库测试连接失败: ", err)
 	}
+	log.Println("数据库连接成功")
+}
 
+func CreateTable() {
 	// 创建表
 	createTableQuery := `
 	CREATE TABLE IF NOT EXISTS users (
@@ -40,20 +41,20 @@ func Connect() {
 		name VARCHAR(100)
 	);
 	`
-	_, err = db.Exec(createTableQuery)
+	_, err := DB.Exec(createTableQuery)
 	if err != nil {
 		log.Fatal("Error creating table: ", err)
 	}
 
 	// 插入数据
 	insertQuery := `INSERT INTO users (name) VALUES ($1), ($2), ($3)`
-	_, err = db.Exec(insertQuery, "Alice", "Bob", "Charlie")
+	_, err = DB.Exec(insertQuery, "Alice", "Bob", "Charlie")
 	if err != nil {
 		log.Fatal("Error inserting data: ", err)
 	}
 
 	// 查询数据
-	rows, err := db.Query("SELECT id, name FROM users")
+	rows, err := DB.Query("SELECT id, name FROM users")
 	if err != nil {
 		log.Fatal("Error executing query: ", err)
 	}
@@ -74,6 +75,24 @@ func Connect() {
 	err = rows.Err()
 	if err != nil {
 		log.Fatal("Error after iterating rows: ", err)
+	}
+}
+
+func ShowAllUsers() {
+	rows, err := DB.Query("SELECT id, name FROM users")
+	if err != nil {
+		log.Fatal("Error executing query: ", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id int
+		var name string
+		err := rows.Scan(&id, &name)
+		if err != nil {
+			log.Fatal("Error scanning row: ", err)
+		}
+		fmt.Println(id, name)
 	}
 }
 
