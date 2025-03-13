@@ -4,6 +4,7 @@ import (
 	"bookkeeping-server/unit"
 	"fmt"
 	_ "github.com/lib/pq"
+	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"time"
@@ -18,20 +19,18 @@ type ValidationCode struct {
 	UpdatedAt time.Time  `gorm:"autoUpdateTime"`
 }
 
-var (
-	host     = "localhost"
-	port     = 3306
-	username = "root"
-	password = "123456"
-	dbname   = "bookKeeping_db_dev"
-)
 var DB *gorm.DB
 
 func Connect() {
+	host := viper.GetString("database.host")
+	port := viper.GetInt("database.port")
+	username := viper.GetString("database.username")
+	password := viper.GetString("database.password")
+	dbname := viper.GetString("database.dbname")
 	dsnRoot := fmt.Sprintf("%s:%s@tcp(%s:%d)/", username, password, host, port)
-	dbRoot, err := gorm.Open(mysql.Open(dsnRoot), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsnRoot), &gorm.Config{})
 	unit.HandleError("数据库连接失败", err)
-	DB = dbRoot
+	DB = db
 	// 如果数据库不存在就创建数据库
 	DB.Exec("CREATE DATABASE IF NOT EXISTS " + dbname + " CHARSET utf8mb4 COLLATE utf8mb4_general_ci;")
 	DB.Exec(fmt.Sprintf("USE %s", dbname))
