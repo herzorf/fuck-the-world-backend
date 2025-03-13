@@ -9,7 +9,6 @@ import (
 // @Summary ping
 // @Description ping
 // @Tags ping
-// @Accept json
 // @Produce json
 // @Success 200
 // @error 500

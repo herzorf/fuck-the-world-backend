@@ -23,24 +23,10 @@ func Run() {
 	var dbCmd = &cobra.Command{
 		Use: "db",
 	}
-	createCmd := &cobra.Command{
-		Use: "create",
-		Run: func(cmd *cobra.Command, args []string) {
-			database.CreateTable()
-		},
-	}
-	showAllUsers := &cobra.Command{
-		Use: "showAllUsers",
-		Run: func(cmd *cobra.Command, args []string) {
-			database.ShowAllUsers()
-		},
-	}
+
 	rootCmd.AddCommand(serverCmd)
 	rootCmd.AddCommand(dbCmd)
-	dbCmd.AddCommand(createCmd)
-	dbCmd.AddCommand(showAllUsers)
 	database.Connect()
-	defer database.Close()
 	err := rootCmd.Execute()
 	if err != nil {
 		panic(err)
