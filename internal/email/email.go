@@ -3,12 +3,10 @@ package email
 import (
 	"github.com/spf13/viper"
 	"gopkg.in/gomail.v2"
-	"log"
 	"strconv"
 )
 
-func Send(aimEmail string) {
-	log.Println("发送邮件给", aimEmail)
+func SendCode(aimEmail string, code string) error {
 	var emailHost = viper.GetString("email.host")
 	var username = viper.GetString("email.username")
 	var password = viper.GetString("email.password")
@@ -16,13 +14,16 @@ func Send(aimEmail string) {
 	m := gomail.NewMessage()
 	m.SetHeader("From", username)
 	m.SetHeader("To", aimEmail)
-	m.SetHeader("Subject", "Hello!")
-	m.SetBody("text/html", "Hello <b>herzorf</b>!")
+	m.SetHeader("Subject", "验证码")
+	m.SetBody("text/html", "您本次的验证码是："+code)
+	var returnErr error
 	if port, err := strconv.Atoi(port); err == nil {
 		d := gomail.NewDialer(emailHost, port, username, password)
 		if err := d.DialAndSend(m); err != nil {
-			panic(err)
+			returnErr = err
 		}
+	} else {
+		returnErr = err
 	}
-
+	return returnErr
 }

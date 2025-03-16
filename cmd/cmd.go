@@ -29,7 +29,7 @@ func Run() {
 			if len(args) == 0 {
 				log.Println("请输入目标邮箱")
 			} else {
-				email.Send(args[0])
+				email.SendCode(args[0], "123456")
 			}
 		},
 	}

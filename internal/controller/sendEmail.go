@@ -1,10 +1,9 @@
 package controller
 
 import (
+	"bookkeeping-server/internal/email"
 	"bookkeeping-server/unit"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 )
 
@@ -17,6 +16,15 @@ func SendEmail(c *gin.Context) {
 	if err != nil {
 		unit.HandleError("sendEmail接口数据读取失败", err)
 	}
-	log.Println("发送邮件给", aimEmail)
-	c.String(http.StatusBadRequest, fmt.Sprintf("发送邮件给:%s", aimEmail.Email))
+	err = email.SendCode(aimEmail.Email, "123456")
+	if err != nil {
+		unit.HandleError("sendEmail接口发送邮件失败", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "发送失败",
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "发送成功",
+		})
+	}
 }

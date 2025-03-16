@@ -1,6 +1,7 @@
 package router
 
 import (
+	"bookkeeping-server/config"
 	"bookkeeping-server/docs"
 	"bookkeeping-server/internal/controller"
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,7 @@ import (
 //	@BasePath	/
 
 func New() *gin.Engine {
+	config.LoadConfigYaml()
 	r := gin.Default()
 	r.GET("/ping", controller.PingHandle)
 	r.POST("/sendEmail", controller.SendEmail)
