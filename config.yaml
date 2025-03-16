@@ -4,3 +4,9 @@ database:
   username: root
   password: 123456
   dbname: bookKeeping_db_dev
+
+email:
+  host: smtp.qq.com
+  port: 587
+  username: 1446450047@qq.com
+  password: rzmosrptpkatjgbc
