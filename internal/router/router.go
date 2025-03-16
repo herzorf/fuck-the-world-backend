@@ -22,6 +22,8 @@ import (
 func New() *gin.Engine {
 	r := gin.Default()
 	r.GET("/ping", controller.PingHandle)
+	r.POST("/sendEmail", controller.SendEmail)
+
 	docs.SwaggerInfo.Version = "1.0"
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
