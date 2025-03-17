@@ -3,7 +3,6 @@ package database
 import (
 	"bookkeeping-server/unit"
 	"fmt"
-	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
