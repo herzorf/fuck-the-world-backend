@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"bookkeeping-server/internal/email"
+	"bookkeeping-server/internal/pkg/email"
 	"bookkeeping-server/unit"
 	"github.com/gin-gonic/gin"
 	"net/http"

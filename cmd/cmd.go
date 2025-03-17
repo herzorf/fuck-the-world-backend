@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"bookkeeping-server/database"
-	"bookkeeping-server/internal/email"
+	"bookkeeping-server/internal/pkg/email"
 	"bookkeeping-server/internal/router"
 	"github.com/spf13/cobra"
 	"log"
