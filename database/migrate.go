@@ -1,7 +1,13 @@
 package database
 
-import "bookkeeping-server/internal/model"
+import (
+	"bookkeeping-server/internal/model"
+	"bookkeeping-server/unit"
+)
 
 func Migrate() {
-	DB.AutoMigrate(&model.ValidationEmailCode{})
+	err := DB.AutoMigrate(&model.ValidationEmailCode{})
+	if err != nil {
+		unit.HandleError("数据库迁移失败", err)
+	}
 }

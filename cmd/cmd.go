@@ -4,6 +4,7 @@ import (
 	"bookkeeping-server/database"
 	"bookkeeping-server/internal/pkg/email"
 	"bookkeeping-server/internal/router"
+	"bookkeeping-server/unit"
 	"github.com/spf13/cobra"
 	"log"
 )
@@ -29,7 +30,10 @@ func Run() {
 			if len(args) == 0 {
 				log.Println("请输入目标邮箱")
 			} else {
-				email.SendCode(args[0], "123456")
+				err := email.SendCode(args[0], "123456")
+				if err != nil {
+					unit.HandleError("sendEmail接口发送邮件失败", err)
+				}
 			}
 		},
 	}
