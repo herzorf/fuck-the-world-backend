@@ -5,7 +5,9 @@ import (
 	"bookkeeping-server/internal/model"
 	"bookkeeping-server/internal/pkg/email"
 	"bookkeeping-server/unit"
+	"crypto/rand"
 	"github.com/gin-gonic/gin"
+	"math/big"
 	"net/http"
 )
 
@@ -22,9 +24,10 @@ func SendEmail(c *gin.Context) {
 		})
 		return
 	}
+	code, _ := generateCode(6)
 	err = database.DB.Create(&model.ValidationEmailCode{
 		Email: aimEmail.Email,
-		Code:  "123456",
+		Code:  code,
 	}).Error
 	if err != nil {
 		unit.HandleError("sendEmail接口数据库写入失败", err)
@@ -33,7 +36,7 @@ func SendEmail(c *gin.Context) {
 		})
 		return
 	}
-	err = email.SendCode(aimEmail.Email, "123456")
+	err = email.SendCode(aimEmail.Email, code)
 	if err != nil {
 		unit.HandleError("sendEmail接口发送邮件失败", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -44,4 +47,15 @@ func SendEmail(c *gin.Context) {
 			"message": "发送成功",
 		})
 	}
+}
+
+func generateCode(len int) (string, error) {
+	key := make([]byte, len)
+	var err1 error
+	for i := range key {
+		n, err := rand.Int(rand.Reader, big.NewInt(10))
+		err1 = err
+		key[i] = byte(n.Int64() + 48)
+	}
+	return string(key), err1
 }
