@@ -25,7 +25,7 @@ func New() *gin.Engine {
 
 	{
 		v1 := r.Group("/api/v1")
-		v1.GET("/ping", controller.PingHandle)
+
 		v1.POST("/sendEmail", controller.SendEmail)
 		v1.POST("/login", controller.Login)
 	}
