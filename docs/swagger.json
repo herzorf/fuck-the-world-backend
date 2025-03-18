@@ -29,6 +29,26 @@
                     }
                 }
             }
+        },
+        "/sendEmail": {
+            "post": {
+                "description": "发送验证码",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sendEmail"
+                ],
+                "summary": "sendEmail",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
         }
     }
 }

@@ -11,6 +11,15 @@ import (
 	"net/http"
 )
 
+// SendEmail godoc
+// @Summary sendEmail
+// @Description 发送验证码
+// @Tags sendEmail
+// @Accept json
+// @Produce json
+// @Success 200
+// @error 500
+// @Router /sendEmail [post]
 func SendEmail(c *gin.Context) {
 	type Email struct {
 		Email string `json:"email"`

@@ -20,4 +20,17 @@ paths:
       summary: ping
       tags:
       - ping
+  /sendEmail:
+    post:
+      consumes:
+      - application/json
+      description: 发送验证码
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: sendEmail
+      tags:
+      - sendEmail
 swagger: "2.0"
