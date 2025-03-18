@@ -7,6 +7,7 @@ import (
 	"bookkeeping-server/unit"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
 )
 
 func Login(c *gin.Context) {
@@ -31,12 +32,20 @@ func Login(c *gin.Context) {
 		return
 	} else {
 		jwt, err := jwt.GenerateJWT(loginInfo.Email)
+		var user model.User
+		result := database.DB.Where("email = ?", loginInfo.Email).First(&user)
+		if result.RowsAffected == 0 {
+			user = model.User{Email: loginInfo.Email}
+			database.DB.Create(&user)
+			log.Println("没找到", user)
+		}
+		log.Println(user)
 		if err != nil {
 			unit.HandleError("生成JWT失败", err)
 		}
-		c.JSON(200, gin.H{
-			"message": "登录成功",
-			"result":  jwt,
+		unit.RespondJSON(c, http.StatusOK, "登录成功", gin.H{
+			"jwt":    jwt,
+			"userId": user.ID,
 		})
 		return
 	}
