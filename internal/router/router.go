@@ -2,7 +2,6 @@ package router
 
 import (
 	"bookkeeping-server/config"
-	"bookkeeping-server/docs"
 	"bookkeeping-server/internal/controller"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -23,11 +22,14 @@ import (
 func New() *gin.Engine {
 	config.LoadConfigYaml()
 	r := gin.Default()
-	r.GET("/ping", controller.PingHandle)
-	r.POST("/sendEmail", controller.SendEmail)
-	r.POST("/login", controller.Login)
 
-	docs.SwaggerInfo.Version = "1.0"
+	{
+		v1 := r.Group("/api/v1")
+		v1.GET("/ping", controller.PingHandle)
+		v1.POST("/sendEmail", controller.SendEmail)
+		v1.POST("/login", controller.Login)
+	}
+
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
