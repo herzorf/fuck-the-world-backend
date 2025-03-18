@@ -3,6 +3,8 @@ package controller
 import (
 	"bookkeeping-server/database"
 	"bookkeeping-server/internal/model"
+	"bookkeeping-server/internal/pkg/jwt"
+	"bookkeeping-server/unit"
 	"github.com/gin-gonic/gin"
 	"log"
 )
@@ -28,10 +30,13 @@ func Login(c *gin.Context) {
 		})
 		return
 	} else {
-		JWT := "12121212121"
+		jwt, err := jwt.GenerateJWT(loginInfo.Email)
+		if err != nil {
+			unit.HandleError("生成JWT失败", err)
+		}
 		c.JSON(200, gin.H{
 			"message": "登录成功",
-			"result":  JWT,
+			"result":  jwt,
 		})
 		return
 	}
