@@ -22,5 +22,7 @@ func Connect() {
 	DB = db
 	// 如果数据库不存在就创建数据库
 	DB.Exec("CREATE DATABASE IF NOT EXISTS " + dbname + " CHARSET utf8mb4 COLLATE utf8mb4_general_ci;")
-	DB.Exec(fmt.Sprintf("USE %s", dbname))
+	if err := DB.Exec(fmt.Sprintf("USE %s", dbname)).Error; err != nil {
+		unit.HandleError("选择数据库失败", err)
+	}
 }

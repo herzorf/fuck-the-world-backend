@@ -3,6 +3,7 @@ package router
 import (
 	"bookkeeping-server/config"
 	"bookkeeping-server/internal/controller"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -22,6 +23,12 @@ import (
 func New() *gin.Engine {
 	config.LoadConfigYaml()
 	r := gin.Default()
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // 允许前端的地址
+		AllowMethods:     []string{"POST"},
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		AllowCredentials: true, // 允许携带 Cookie
+	}))
 
 	{
 		v1 := r.Group("/api/v1")

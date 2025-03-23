@@ -8,7 +8,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 )
 
@@ -32,13 +31,9 @@ func Login(c *gin.Context) {
 	var user model.User
 	result := database.DB.Where("username = ?", loginInfo.Username).First(&user)
 	if result.Error != nil {
-		log.Println(result.RowsAffected)
-		c.JSON(400, gin.H{
-			"message": "用户不存在",
-		})
+		unit.RespondJSON(c, http.StatusBadRequest, "用户不存在", nil)
 		return
 	} else {
-		log.Println(md5Hash("123456"))
 		if user.Password != md5Hash(loginInfo.Password) {
 			unit.RespondJSON(c, http.StatusBadRequest, "密码错误", nil)
 			return

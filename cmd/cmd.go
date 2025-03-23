@@ -48,11 +48,11 @@ func Run() {
 			database.Migrate()
 		},
 	}
+	database.Connect()
 	rootCmd.AddCommand(serverCmd)
 	rootCmd.AddCommand(dbCmd)
 	rootCmd.AddCommand(emailCmd)
 	dbCmd.AddCommand(migrateCmd)
-	database.Connect()
 	err := rootCmd.Execute()
 	if err != nil {
 		panic(err)
