@@ -5,15 +5,21 @@ import (
 	"bookkeeping-server/internal/model"
 	"bookkeeping-server/internal/pkg/jwt"
 	"bookkeeping-server/unit"
+	"crypto/md5"
+	"encoding/hex"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 )
 
+func md5Hash(text string) string {
+	hash := md5.Sum([]byte(text))
+	return hex.EncodeToString(hash[:])
+}
 func Login(c *gin.Context) {
 	type LoginInfo struct {
-		Email string `json:"email"`
-		Code  string `json:"code"`
+		Username string `json:"username" binding:"required"`
+		Password string `json:"password" binding:"required"`
 	}
 	var loginInfo = &LoginInfo{}
 	err := c.ShouldBindJSON(loginInfo)
@@ -23,29 +29,26 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
-	result := database.DB.Where("email = ? AND code = ?", loginInfo.Email, loginInfo.Code).First(&model.ValidationEmailCode{})
+	var user model.User
+	result := database.DB.Where("username = ?", loginInfo.Username).First(&user)
 	if result.Error != nil {
 		log.Println(result.RowsAffected)
 		c.JSON(400, gin.H{
-			"message": "邮箱和验证码不匹配",
+			"message": "用户不存在",
 		})
 		return
 	} else {
-		jwt, err := jwt.GenerateJWT(loginInfo.Email)
-		var user model.User
-		result := database.DB.Where("email = ?", loginInfo.Email).First(&user)
-		if result.RowsAffected == 0 {
-			user = model.User{Email: loginInfo.Email}
-			database.DB.Create(&user)
-			log.Println("没找到", user)
+		log.Println(md5Hash("123456"))
+		if user.Password != md5Hash(loginInfo.Password) {
+			unit.RespondJSON(c, http.StatusBadRequest, "密码错误", nil)
+			return
 		}
-		log.Println(user)
+		jwt, err := jwt.GenerateJWT(user.ID)
 		if err != nil {
 			unit.HandleError("生成JWT失败", err)
 		}
 		unit.RespondJSON(c, http.StatusOK, "登录成功", gin.H{
-			"jwt":    jwt,
-			"userId": user.ID,
+			"jwt": jwt,
 		})
 		return
 	}
