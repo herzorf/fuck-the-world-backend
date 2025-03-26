@@ -8,7 +8,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -21,9 +20,6 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
-		// 去掉 "Bearer " 前缀
-		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 		// 解析 JWT
 		claims := jwt.MapClaims{}
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
