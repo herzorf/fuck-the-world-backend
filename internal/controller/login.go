@@ -38,12 +38,12 @@ func Login(c *gin.Context) {
 			unit.RespondJSON(c, http.StatusBadRequest, "密码错误", nil)
 			return
 		}
-		jwt, err := jwt.GenerateJWT(user.ID)
+		jwtString, err := jwt.GenerateJWT(user.ID)
 		if err != nil {
 			unit.HandleError("生成JWT失败", err)
 		}
 		unit.RespondJSON(c, http.StatusOK, "登录成功", gin.H{
-			"jwt":      jwt,
+			"jwt":      jwtString,
 			"username": user.Username,
 			"id":       user.ID,
 		})
