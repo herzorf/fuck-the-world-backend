@@ -2,6 +2,7 @@ package router
 
 import (
 	"fuck-the-world/config"
+	"fuck-the-world/docs"
 	"fuck-the-world/internal/controller"
 	"fuck-the-world/internal/middleware"
 	"github.com/gin-contrib/cors"
@@ -10,20 +11,22 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-//	@title			项目文档
-//	@version		1.0
-//	@description	这是一个简单的记账项目
+// @title 接口文档
+// @version 1.0
+// @description 接口文档
+// @termsOfService https://github.com/herzorf
 
-//	@contact.name	herzorf
-//	@contact.url	https://github.com/herzorf
-//	@contact.email	herzorf@icloud.com
+// @contact.name herzorf
+// @contact.url https://github.com/herzorf
+// @contact.email 1446450047@qq.com
 
-//	@host		localhost:8080
-//	@BasePath	/
+// @host 42.192.105.150:8888
+// @BasePath "/api/v1"
 
 func New() *gin.Engine {
 	config.LoadConfigYaml()
 	r := gin.New()
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	r.Use(cors.New(cors.Config{

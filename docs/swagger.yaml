@@ -1,12 +1,13 @@
-basePath: /
-host: localhost:8080
+basePath: '"/api/v1"'
+host: 42.192.105.150:8888
 info:
   contact:
-    email: herzorf@icloud.com
+    email: 1446450047@qq.com
     name: herzorf
     url: https://github.com/herzorf
-  description: 这是一个简单的记账项目
-  title: 项目文档
+  description: 接口文档
+  termsOfService: https://github.com/herzorf
+  title: 接口文档
   version: "1.0"
 paths:
   /sendEmail:
