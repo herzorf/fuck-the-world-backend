@@ -2,8 +2,8 @@ package router
 
 import (
 	"bookkeeping-server/config"
-	"bookkeeping-server/docs"
 	"bookkeeping-server/internal/controller"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -23,10 +23,20 @@ import (
 func New() *gin.Engine {
 	config.LoadConfigYaml()
 	r := gin.Default()
-	r.GET("/ping", controller.PingHandle)
-	r.POST("/sendEmail", controller.SendEmail)
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // 允许前端的地址
+		AllowMethods:     []string{"POST"},
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		AllowCredentials: true, // 允许携带 Cookie
+	}))
 
-	docs.SwaggerInfo.Version = "1.0"
+	{
+		v1 := r.Group("/api/v1")
+
+		v1.POST("/sendEmail", controller.SendEmail)
+		v1.POST("/login", controller.Login)
+	}
+
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
@@ -34,7 +44,7 @@ func New() *gin.Engine {
 
 func RunServer() {
 	r := New()
-	err := r.Run() // listen and serve on 0.0.0.0:8080
+	err := r.Run("0.0.0.0:8888")
 	if err != nil {
 		panic(err)
 	}

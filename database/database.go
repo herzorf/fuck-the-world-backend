@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"log"
 )
 
 var DB *gorm.DB
@@ -17,10 +18,13 @@ func Connect() {
 	password := viper.GetString("database.password")
 	dbname := viper.GetString("database.dbname")
 	dsnRoot := fmt.Sprintf("%s:%s@tcp(%s:%d)/", username, password, host, port)
+	log.Println(dsnRoot)
 	db, err := gorm.Open(mysql.Open(dsnRoot), &gorm.Config{})
 	unit.HandleError("数据库连接失败", err)
 	DB = db
 	// 如果数据库不存在就创建数据库
 	DB.Exec("CREATE DATABASE IF NOT EXISTS " + dbname + " CHARSET utf8mb4 COLLATE utf8mb4_general_ci;")
-	DB.Exec(fmt.Sprintf("USE %s", dbname))
+	if err := DB.Exec(fmt.Sprintf("USE %s", dbname)).Error; err != nil {
+		unit.HandleError("选择数据库失败", err)
+	}
 }

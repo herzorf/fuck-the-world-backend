@@ -28,9 +28,7 @@ func SendEmail(c *gin.Context) {
 	err := c.ShouldBindJSON(aimEmail)
 	if err != nil {
 		unit.HandleError("sendEmail接口数据读取失败", err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "数据读取失败",
-		})
+		unit.RespondJSON(c, http.StatusBadRequest, "数据读取失败", nil)
 		return
 	}
 	code, _ := generateCode(6)
@@ -40,21 +38,15 @@ func SendEmail(c *gin.Context) {
 	}).Error
 	if err != nil {
 		unit.HandleError("sendEmail接口数据库写入失败", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "数据库写入失败",
-		})
+		unit.RespondJSON(c, http.StatusInternalServerError, "数据库写入失败", nil)
 		return
 	}
 	err = email.SendCode(aimEmail.Email, code)
 	if err != nil {
 		unit.HandleError("sendEmail接口发送邮件失败", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "发送失败",
-		})
+		unit.RespondJSON(c, http.StatusInternalServerError, "发送邮件失败", nil)
 	} else {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "发送成功",
-		})
+		unit.RespondJSON(c, http.StatusOK, "发送邮件成功", nil)
 	}
 }
 
