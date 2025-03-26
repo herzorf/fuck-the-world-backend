@@ -43,7 +43,9 @@ func Login(c *gin.Context) {
 			unit.HandleError("生成JWT失败", err)
 		}
 		unit.RespondJSON(c, http.StatusOK, "登录成功", gin.H{
-			"jwt": jwt,
+			"jwt":      jwt,
+			"username": user.Username,
+			"id":       user.ID,
 		})
 		return
 	}
