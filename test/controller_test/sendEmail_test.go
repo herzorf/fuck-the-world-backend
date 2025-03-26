@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"bookkeeping-server/internal/router"
+	"fuck-the-world/internal/router"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"

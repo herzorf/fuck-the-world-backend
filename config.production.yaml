@@ -3,7 +3,7 @@ database:
   port: 3306
   username: root
   password: 123456
-  dbname: bookKeeping_db_dev
+  dbname: fuck_the_world_db_dev
 
 email:
   host: smtp.qq.com

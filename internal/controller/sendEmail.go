@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"bookkeeping-server/database"
-	"bookkeeping-server/internal/model"
-	"bookkeeping-server/internal/pkg/email"
-	"bookkeeping-server/unit"
 	"crypto/rand"
+	"fuck-the-world/database"
+	"fuck-the-world/internal/model"
+	"fuck-the-world/internal/pkg/email"
+	"fuck-the-world/unit"
 	"github.com/gin-gonic/gin"
 	"math/big"
 	"net/http"

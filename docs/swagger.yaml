@@ -9,17 +9,6 @@ info:
   title: 项目文档
   version: "1.0"
 paths:
-  /ping:
-    get:
-      description: ping
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      summary: ping
-      tags:
-      - ping
   /sendEmail:
     post:
       consumes:

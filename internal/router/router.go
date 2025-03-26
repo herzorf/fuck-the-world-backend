@@ -1,8 +1,8 @@
 package router
 
 import (
-	"bookkeeping-server/config"
-	"bookkeeping-server/internal/controller"
+	"fuck-the-world/config"
+	"fuck-the-world/internal/controller"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"

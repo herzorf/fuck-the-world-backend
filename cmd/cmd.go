@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"bookkeeping-server/database"
-	"bookkeeping-server/internal/pkg/email"
-	"bookkeeping-server/internal/router"
-	"bookkeeping-server/unit"
+	"fuck-the-world/database"
+	"fuck-the-world/internal/pkg/email"
+	"fuck-the-world/internal/router"
+	"fuck-the-world/unit"
 	"github.com/spf13/cobra"
 	"log"
 )

@@ -1,12 +1,12 @@
 package controller
 
 import (
-	"bookkeeping-server/database"
-	"bookkeeping-server/internal/model"
-	"bookkeeping-server/internal/pkg/jwt"
-	"bookkeeping-server/unit"
 	"crypto/md5"
 	"encoding/hex"
+	"fuck-the-world/database"
+	"fuck-the-world/internal/model"
+	"fuck-the-world/internal/pkg/jwt"
+	"fuck-the-world/unit"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

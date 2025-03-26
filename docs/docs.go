@@ -20,23 +20,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/ping": {
-            "get": {
-                "description": "ping",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ping"
-                ],
-                "summary": "ping",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
         "/sendEmail": {
             "post": {
                 "description": "发送验证码",

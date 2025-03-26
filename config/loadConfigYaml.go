@@ -1,7 +1,7 @@
 package config
 
 import (
-	"bookkeeping-server/unit"
+	"fuck-the-world/unit"
 	"github.com/spf13/viper"
 	"os"
 )

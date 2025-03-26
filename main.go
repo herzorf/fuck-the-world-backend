@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bookkeeping-server/cmd"
-	"bookkeeping-server/config"
+	"fuck-the-world/cmd"
+	"fuck-the-world/config"
 )
 
 func main() {

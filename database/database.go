@@ -1,8 +1,8 @@
 package database
 
 import (
-	"bookkeeping-server/unit"
 	"fmt"
+	"fuck-the-world/unit"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

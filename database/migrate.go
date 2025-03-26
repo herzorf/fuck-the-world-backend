@@ -1,8 +1,8 @@
 package database
 
 import (
-	"bookkeeping-server/internal/model"
-	"bookkeeping-server/unit"
+	"fuck-the-world/internal/model"
+	"fuck-the-world/unit"
 )
 
 func Migrate() {
