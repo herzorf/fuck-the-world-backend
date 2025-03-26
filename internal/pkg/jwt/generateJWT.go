@@ -1,11 +1,11 @@
-package jwt
+package FTWJwt
 
 import (
 	"github.com/golang-jwt/jwt/v5"
 	"time"
 )
 
-var jwtSecret = []byte("your-secret-key")
+var Secret = []byte("fuck-the-world")
 
 func GenerateJWT(id uint) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -13,5 +13,5 @@ func GenerateJWT(id uint) (string, error) {
 		"exp":    time.Now().Add(time.Hour).Unix(), // 过期时间 1 小时
 	})
 
-	return token.SignedString(jwtSecret)
+	return token.SignedString(Secret)
 }
