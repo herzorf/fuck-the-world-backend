@@ -45,7 +45,6 @@ func Login(c *gin.Context) {
 		unit.RespondJSON(c, http.StatusOK, "登录成功", gin.H{
 			"jwt":      jwtString,
 			"username": user.Username,
-			"id":       user.ID,
 		})
 		return
 	}
