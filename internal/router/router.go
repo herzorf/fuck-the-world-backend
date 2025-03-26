@@ -3,6 +3,7 @@ package router
 import (
 	"fuck-the-world/config"
 	"fuck-the-world/internal/controller"
+	"fuck-the-world/internal/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -22,19 +23,22 @@ import (
 
 func New() *gin.Engine {
 	config.LoadConfigYaml()
-	r := gin.Default()
+	r := gin.New()
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"}, // 允许前端的地址
 		AllowMethods:     []string{"POST"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		AllowCredentials: true, // 允许携带 Cookie
 	}))
-
+	r.POST("/api/v1/login", controller.Login)
 	{
-		v1 := r.Group("/api/v1")
-
-		v1.POST("/sendEmail", controller.SendEmail)
-		v1.POST("/login", controller.Login)
+		//需要登陆的接口
+		authGroup := r.Group("/api/v1")
+		authGroup.Use(middleware.AuthMiddleware())
+		authGroup.POST("/ping", controller.Ping)
+		authGroup.POST("/sendEmail", controller.SendEmail)
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
