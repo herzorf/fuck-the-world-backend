@@ -75,22 +75,21 @@ func UpdateOperator(c *gin.Context) {
 		unit.RespondJSON(c, http.StatusBadRequest, "参数绑定失败", nil)
 		return
 	}
-	if len(user.Username) == 0 {
-		unit.RespondJSON(c, http.StatusBadRequest, "用户名不能为空", nil)
+	if user.ID == 0 {
+		unit.RespondJSON(c, http.StatusBadRequest, "用户id不能为空", nil)
 		return
 	}
 	var existingUser model.User
-	if err := database.DB.Where("username = ?", user.Username).First(&existingUser).Error; err != nil {
+	if err := database.DB.Where("id = ?", user.ID).First(&existingUser).Error; err != nil {
 		unit.RespondJSON(c, http.StatusBadRequest, "用户不存在", nil)
 		return
 	}
-	if len(user.Password) != 0 {
-		existingUser.Password = user.Password
+	if existingUser.IsDeleted == true {
+		unit.RespondJSON(c, http.StatusBadRequest, "用户已删除", nil)
+		return
 	}
-	if len(user.Role) != 0 {
-		existingUser.Role = user.Role
-	}
-	if err := database.DB.Save(&existingUser).Error; err != nil {
+
+	if err := database.DB.Model(&user).Where("id = ?", user.ID).Update("is_active", user.IsActive).Error; err != nil {
 		unit.RespondJSON(c, http.StatusInternalServerError, "修改用户失败", nil)
 		return
 	}
