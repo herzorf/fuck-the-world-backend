@@ -34,11 +34,11 @@ func Login(c *gin.Context) {
 		unit.RespondJSON(c, http.StatusBadRequest, "用户不存在", nil)
 		return
 	} else {
-		if user.Password != md5Hash(loginInfo.Password) {
+		if !user.CheckPassword(loginInfo.Password) {
 			unit.RespondJSON(c, http.StatusBadRequest, "密码错误", nil)
 			return
 		}
-		jwtString, err := FTWJwt.GenerateJWT(user.ID)
+		jwtString, err := FTWJwt.GenerateJWT(user)
 		if err != nil {
 			unit.HandleError("生成JWT失败", err)
 		}

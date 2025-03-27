@@ -1,6 +1,7 @@
 package FTWJwt
 
 import (
+	"fuck-the-world/internal/model"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"log"
@@ -9,9 +10,10 @@ import (
 
 var Secret = []byte("fuck-the-world")
 
-func GenerateJWT(id uint) (string, error) {
+func GenerateJWT(user model.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userId": id,                               // 自定义字段，存储用户信息
+		"userId": user.ID,
+		"role":   user.Role,
 		"exp":    time.Now().Add(time.Hour).Unix(), // 过期时间 1 小时
 	})
 

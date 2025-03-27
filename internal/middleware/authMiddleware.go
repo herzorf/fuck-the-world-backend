@@ -23,8 +23,27 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		log.Println("userId", userId)
-		c.Set("userId", userId)
+		// 检查 Token 是否过期
+		exp, ok := claims["exp"].(float64)
+		if !ok || int64(exp) < time.Now().Unix() {
+			unit.RespondJSON(c, http.StatusUnauthorized, "Token 已过期", nil)
+			c.Abort()
+			return
+		}
+
+		// 获取 userId
+		userId, ok := claims["userId"].(float64)
+		if !ok {
+			unit.RespondJSON(c, http.StatusUnauthorized, "Token 缺少用户信息", nil)
+			c.Abort()
+			return
+		}
+
+		// 将 userId 存入请求上下文，供后续处理使用
+		c.Set("userId", uint(userId))
+		// 将 role 存入请求上下文，供后续处理使用
+		c.Set("role", claims["role"])
+		// 继续执行下一个中间件或请求处理
 		c.Next()
 	}
 }
