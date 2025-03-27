@@ -2,7 +2,6 @@ package model
 
 import (
 	"golang.org/x/crypto/bcrypt"
-	"log"
 	"time"
 )
 
@@ -27,7 +26,6 @@ func (u *User) HashPassword() error {
 	if err != nil {
 		return err
 	}
-	log.Println(string(hashedPassword))
 	u.Password = string(hashedPassword)
 	return nil
 }
