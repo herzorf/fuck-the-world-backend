@@ -16,19 +16,26 @@ func CreateOperator(c *gin.Context) {
 		return
 	}
 	if len(user.Username) == 0 || len(user.Password) == 0 {
-		// 用户名密码不能为空
 		unit.RespondJSON(c, http.StatusBadRequest, "用户名或密码不能为空", nil)
 		return
 	}
-	//1.先检查用户名是否已经存在
-	//2.如果已经存在则返回“用户名已存在”
-	//3.如果用户名不存在则创建该用户
 	var existingUser model.User
 	if err := database.DB.Where("username = ?", user.Username).First(&existingUser).Error; err == nil {
 		unit.RespondJSON(c, http.StatusBadRequest, "用户已存在", nil)
 		return
 	}
-	if err := database.DB.Where("username = ?", user.Username).First(&user).Error; err == nil {
-
+	if err := user.HashPassword(); err != nil {
+		unit.RespondJSON(c, http.StatusInternalServerError, "密码加密失败", nil)
+		return
 	}
+	newUser := model.User{
+		Username: user.Username,
+		Password: user.Password,
+		Role:     model.RoleOperator,
+	}
+	if err := database.DB.Create(&newUser).Error; err != nil {
+		unit.RespondJSON(c, http.StatusInternalServerError, "创建用户失败", nil)
+		return
+	}
+	unit.RespondJSON(c, http.StatusOK, "创建用户成功", nil)
 }
