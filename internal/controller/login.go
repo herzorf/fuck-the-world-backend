@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"fuck-the-world/database"
 	"fuck-the-world/internal/model"
 	"fuck-the-world/internal/pkg/jwt"
@@ -11,10 +9,6 @@ import (
 	"net/http"
 )
 
-func md5Hash(text string) string {
-	hash := md5.Sum([]byte(text))
-	return hex.EncodeToString(hash[:])
-}
 func Login(c *gin.Context) {
 	type LoginInfo struct {
 		Username string `json:"username" binding:"required"`
