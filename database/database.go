@@ -7,6 +7,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
+	"time"
 )
 
 var DB *gorm.DB
@@ -22,6 +23,10 @@ func Connect() {
 	db, err := gorm.Open(mysql.Open(dsnRoot), &gorm.Config{})
 	unit.HandleError("数据库连接失败", err)
 	DB = db
+	sqlDB, err := db.DB()
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetConnMaxLifetime(time.Minute * 30)
 	// 如果数据库不存在就创建数据库
 	DB.Exec("CREATE DATABASE IF NOT EXISTS " + dbname + " CHARSET utf8mb4 COLLATE utf8mb4_general_ci;")
 	if err := DB.Exec(fmt.Sprintf("USE %s", dbname)).Error; err != nil {
