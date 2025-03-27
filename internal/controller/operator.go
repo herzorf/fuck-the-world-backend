@@ -101,5 +101,9 @@ func QueryOperatorList(c *gin.Context) {
 	if err := database.DB.Where("role = ? AND is_deleted = ?", model.RoleOperator, false).Find(&users).Error; err != nil {
 		unit.RespondJSON(c, http.StatusInternalServerError, "查询用户列表失败", nil)
 	}
+	// 删除密码字段
+	for i := range users {
+		users[i].Password = ""
+	}
 	unit.RespondJSON(c, http.StatusOK, "", users)
 }
