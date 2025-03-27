@@ -1,41 +1,28 @@
 package middleware
 
 import (
-	"errors"
 	FTWJwj "fuck-the-world/internal/pkg/jwt"
 	"fuck-the-world/unit"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 	"log"
 	"net/http"
-	"time"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 获取 Authorization 头部
 		tokenString := c.GetHeader("Authorization")
-		if tokenString == "" {
+		if len(tokenString) == 0 {
 			unit.RespondJSON(c, http.StatusUnauthorized, "未登陆", nil)
 			c.Abort()
 			return
 		}
-		// 解析 JWT
-		claims := jwt.MapClaims{}
-		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, errors.New("签名方法不匹配")
-			}
-			return FTWJwj.Secret, nil
-		})
-		log.Println("44444444", token.Valid)
-		// 检查解析是否成功
-		if err != nil || !token.Valid {
-			unit.RespondJSON(c, http.StatusUnauthorized, "无效Token", nil)
+		userId, err := FTWJwj.ParseJWT(tokenString)
+		if err != nil {
+			unit.RespondJSON(c, http.StatusUnauthorized, err.Error(), nil)
 			c.Abort()
 			return
 		}
-
 		// 检查 Token 是否过期
 		exp, ok := claims["exp"].(float64)
 		if !ok || int64(exp) < time.Now().Unix() {
