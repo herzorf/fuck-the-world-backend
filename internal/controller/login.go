@@ -23,13 +23,17 @@ func Login(c *gin.Context) {
 		return
 	}
 	var user model.User
-	result := database.DB.Where("username = ?", loginInfo.Username).First(&user)
+	result := database.DB.Where("username = ? AND is_deleted = ?", loginInfo.Username, false).First(&user)
 	if result.Error != nil {
 		unit.RespondJSON(c, http.StatusBadRequest, "用户不存在", nil)
 		return
 	} else {
 		if !user.CheckPassword(loginInfo.Password) {
 			unit.RespondJSON(c, http.StatusBadRequest, "密码错误", nil)
+			return
+		}
+		if !user.IsActive {
+			unit.RespondJSON(c, http.StatusForbidden, "该用户不可用，请联系管理员", nil)
 			return
 		}
 		jwtString, err := FTWJwt.GenerateJWT(user)
