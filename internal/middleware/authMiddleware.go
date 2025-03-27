@@ -54,7 +54,8 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		// 将 userId 存入请求上下文，供后续处理使用
 		c.Set("userId", uint(userId))
-
+		// 将 role 存入请求上下文，供后续处理使用
+		c.Set("role", claims["role"])
 		// 继续执行下一个中间件或请求处理
 		c.Next()
 	}

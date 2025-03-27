@@ -36,7 +36,7 @@ func New() *gin.Engine {
 	{
 		//需要登陆的接口
 		authGroup := r.Group("/api/v1")
-		authGroup.Use(middleware.AuthMiddleware())
+		authGroup.Use(middleware.AuthMiddleware(), middleware.AuthAdminMiddleWare())
 		authGroup.POST("/ping", controller.Ping)
 		authGroup.POST("/sendEmail", controller.SendEmail)
 	}
