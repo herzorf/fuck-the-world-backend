@@ -6,12 +6,14 @@ import (
 )
 
 type User struct {
-	ID        uint   `gorm:"primaryKey"`
-	Username  string `gorm:"size:255;not null"`
-	Password  string `gorm:"size:255;not null"`
-	Role      string `gorm:"size:50;not null;default:'operator''"` // 角色字段
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        uint      `gorm:"primaryKey;comment:'用户ID'"`
+	Username  string    `gorm:"size:255;not null;comment:'用户名'"`
+	Password  string    `gorm:"size:255;not null;comment:'密码'"`
+	Role      string    `gorm:"size:50;not null;default:'operator';comment:'角色'"`
+	CreatedAt time.Time `gorm:"autoCreateTime;comment:'创建时间'"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime;comment:'更新时间'"`
+	IsActive  bool      `gorm:"default:true;comment:'是否可用'"`
+	IsDeleted bool      `gorm:"default:false;comment:'是否删除'"`
 }
 
 // 角色枚举
