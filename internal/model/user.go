@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"golang.org/x/crypto/bcrypt"
+	"log"
+	"time"
+)
 
 type User struct {
 	ID        uint   `gorm:"primaryKey"`
@@ -16,3 +20,20 @@ const (
 	RoleAdmin    = "admin"
 	RoleOperator = "operator"
 )
+
+// HashPassword 加密密码
+func (u *User) HashPassword() error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	log.Println(string(hashedPassword))
+	u.Password = string(hashedPassword)
+	return nil
+}
+
+// CheckPassword 验证密码
+func (u *User) CheckPassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+	return err == nil
+}
