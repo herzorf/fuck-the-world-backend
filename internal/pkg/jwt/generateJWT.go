@@ -1,8 +1,8 @@
 package FTWJwt
 
 import (
-	"fuck-the-world/internal/model"
 	"fmt"
+	"fuck-the-world/internal/model"
 	"github.com/golang-jwt/jwt/v5"
 	"log"
 	"time"
@@ -19,35 +19,49 @@ func GenerateJWT(user model.User) (string, error) {
 
 	return token.SignedString(Secret)
 }
-func ParseJWT(tokenString string) (uint, error) {
+
+type JwtInfo struct {
+	UserID uint
+	Role   string
+}
+
+func ParseJWT(tokenString string) (JwtInfo, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return Secret, nil // 返回密钥
 	}, jwt.WithoutClaimsValidation())
-
+	var jInfo = JwtInfo{
+		UserID: 0,
+		Role:   "",
+	}
 	if err != nil {
-		return 0, fmt.Errorf("无效token")
+		return jInfo, fmt.Errorf("无效token")
 	}
 
 	if claims, ok := token.Claims.(*jwt.MapClaims); ok && token.Valid {
 		userIDFloat, ok := (*claims)["userId"].(float64)
 		if !ok {
-			return 0, fmt.Errorf("userId 字段解析失败")
+			return jInfo, fmt.Errorf("userId 字段解析失败")
 		}
 		expFloat, ok := (*claims)["exp"].(float64)
 		if !ok {
-			return 0, fmt.Errorf("exp 字段解析失败")
+			return jInfo, fmt.Errorf("exp 字段解析失败")
+		}
+		role, ok := (*claims)["role"]
+		if !ok {
+			return jInfo, fmt.Errorf("role 字段解析失败")
 		}
 		expTime := time.Unix(int64(expFloat), 0)
 
 		// 检查是否过期
 		if time.Now().After(expTime) {
-			return 0, fmt.Errorf("token 已过期")
+			return jInfo, fmt.Errorf("token 已过期")
 		}
-
-		return uint(userIDFloat), nil
+		jInfo.UserID = uint(userIDFloat)
+		jInfo.Role = role.(string)
+		return jInfo, nil
 	} else {
 		log.Println("token无效载体", token.Valid)
 	}
 
-	return 0, fmt.Errorf("token 无效")
+	return jInfo, fmt.Errorf("token 无效")
 }
