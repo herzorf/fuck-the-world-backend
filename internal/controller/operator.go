@@ -6,6 +6,7 @@ import (
 	"fuck-the-world/unit"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 func CreateOperator(c *gin.Context) {
@@ -96,13 +97,28 @@ func UpdateOperator(c *gin.Context) {
 	unit.RespondJSON(c, http.StatusOK, "修改用户成功", nil)
 }
 func QueryOperatorList(c *gin.Context) {
+	type User struct {
+		ID        uint   `json:"id"`
+		Username  string `json:"username"`
+		Role      string `json:"role"`
+		UpdatedAt string `json:"updatedAt"`
+		IsActive  bool   `json:"isActive"`
+	}
 	var users []model.User
 	if err := database.DB.Where("role = ? AND is_deleted = ?", model.RoleOperator, false).Find(&users).Error; err != nil {
 		unit.RespondJSON(c, http.StatusInternalServerError, "查询用户列表失败", nil)
+		return
 	}
-	// 删除密码字段
+	var responseUsers []User
 	for i := range users {
-		users[i].Password = ""
+		responseUsers = append(responseUsers, User{
+			ID:        users[i].ID,
+			Username:  users[i].Username,
+			Role:      users[i].Role,
+			UpdatedAt: users[i].UpdatedAt.Format(time.DateTime),
+			IsActive:  users[i].IsActive,
+		})
+
 	}
-	unit.RespondJSON(c, http.StatusOK, "", users)
+	unit.RespondJSON(c, http.StatusOK, "", responseUsers)
 }
