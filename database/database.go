@@ -18,7 +18,7 @@ func Connect() {
 	username := viper.GetString("database.username")
 	password := viper.GetString("database.password")
 	dbname := viper.GetString("database.dbname")
-	dsnRoot := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port, dbname)
+	dsnRoot := fmt.Sprintf("%s:%s@tcp(%s:%d)/?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port)
 	log.Println(dsnRoot)
 	db, err := gorm.Open(mysql.Open(dsnRoot), &gorm.Config{})
 	unit.HandleError("数据库连接失败", err)
