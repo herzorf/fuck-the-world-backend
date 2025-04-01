@@ -54,7 +54,7 @@ func ParseJWT(tokenString string) (JwtInfo, error) {
 
 		// 检查是否过期
 		if time.Now().After(expTime) {
-			return jInfo, fmt.Errorf("token 已过期")
+			return jInfo, fmt.Errorf("token 已过期,请重新登录")
 		}
 		jInfo.UserID = uint(userIDFloat)
 		jInfo.Role = role.(string)
