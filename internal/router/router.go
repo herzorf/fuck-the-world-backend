@@ -36,11 +36,12 @@ func New() *gin.Engine {
 		AllowCredentials: true, // 允许携带 Cookie
 	}))
 	r.POST("/api/login", controller.Login)
+	r.GET("/ping", controller.Ping)
+
 	//需要登陆的接口
 	authGroup := r.Group("/api")
 	{
 		authGroup.Use(middleware.AuthMiddleware())
-		authGroup.POST("/ping", controller.Ping)
 		authGroup.POST("/sendEmail", controller.SendEmail)
 	}
 	//需要登录和管理员权限的接口
