@@ -32,6 +32,7 @@ func CreateOperator(c *gin.Context) {
 	newUser := model.User{
 		Username: user.Username,
 		Password: user.Password,
+		IsActive: user.IsActive,
 		Role:     model.RoleOperator,
 	}
 	if err := database.DB.Create(&newUser).Error; err != nil {
@@ -57,12 +58,12 @@ func DeleteOperator(c *gin.Context) {
 		unit.RespondJSON(c, http.StatusBadRequest, "用户不存在", nil)
 		return
 	}
-	if existingUser.IsDeleted == true {
+	if *existingUser.IsDeleted == true {
 		unit.RespondJSON(c, http.StatusBadRequest, "用户已删除", nil)
 		return
 	}
-	existingUser.IsDeleted = true
-	existingUser.IsActive = false
+	*existingUser.IsDeleted = true
+	*existingUser.IsActive = false
 	if err := database.DB.Save(&existingUser).Error; err != nil {
 		unit.RespondJSON(c, http.StatusInternalServerError, "删除用户失败", nil)
 		return
@@ -85,7 +86,7 @@ func UpdateOperator(c *gin.Context) {
 		unit.RespondJSON(c, http.StatusBadRequest, "用户不存在", nil)
 		return
 	}
-	if existingUser.IsDeleted == true {
+	if *existingUser.IsDeleted == true {
 		unit.RespondJSON(c, http.StatusBadRequest, "用户已删除", nil)
 		return
 	}
@@ -102,7 +103,7 @@ func QueryOperatorList(c *gin.Context) {
 		Username  string `json:"username"`
 		Role      string `json:"role"`
 		UpdatedAt string `json:"updatedAt"`
-		IsActive  bool   `json:"isActive"`
+		IsActive  *bool  `json:"isActive"`
 	}
 	var users []model.User
 	if err := database.DB.Where("role = ? AND is_deleted = ?", model.RoleOperator, false).Find(&users).Error; err != nil {

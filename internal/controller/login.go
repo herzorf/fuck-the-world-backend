@@ -32,7 +32,7 @@ func Login(c *gin.Context) {
 			unit.RespondJSON(c, http.StatusBadRequest, "密码错误", nil)
 			return
 		}
-		if !user.IsActive {
+		if !*user.IsActive {
 			unit.RespondJSON(c, http.StatusForbidden, "该用户不可用，请联系管理员", nil)
 			return
 		}

@@ -12,8 +12,8 @@ type User struct {
 	Role      string    `json:"role" gorm:"size:50;not null;default:'operator';comment:'角色'"`
 	CreatedAt time.Time `json:"createdAt" gorm:"type:datetime;default:CURRENT_TIMESTAMP;comment:'创建时间'"`                             // 确保格式
 	UpdatedAt time.Time `json:"updatedAt" gorm:"type:datetime;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;comment:'更新时间'"` // 自动更新
-	IsActive  bool      `json:"isActive" gorm:"default:true;comment:'是否可用'"`
-	IsDeleted bool      `json:"isDeleted" gorm:"default:false;comment:'是否删除'"`
+	IsActive  *bool     `json:"isActive" gorm:"default:true;comment:'是否可用'"`
+	IsDeleted *bool     `json:"isDeleted" gorm:"default:false;comment:'是否删除'"`
 }
 
 // 角色枚举
