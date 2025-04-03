@@ -20,4 +20,6 @@ ssh root@$SERVER_IP << EOF
   docker-compose up -d
 EOF
 
+rm -f fuck-the-world.tar
+
 echo "部署完成！"
