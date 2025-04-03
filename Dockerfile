@@ -33,4 +33,5 @@ COPY config.production.yaml /
 EXPOSE 8888
 
 # 运行应用
-CMD ["/fuck-the-world","server"]
+CMD ["/bin/sh", "-c", "/fuck-the-world db migrate && /fuck-the-world server"]
+
