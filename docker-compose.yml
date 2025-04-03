@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  fuck-the-world-app:
+    image: fuck-the-world
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fuck-the-world-app
+    restart: always
+    depends_on:
+      - fuck-the-world-mysql
+    networks:
+      - fuck-the-world-network
+    ports:
+      - "8888:8888"
+    environment:
+      APP_ENV: production
+      GIN_MODE: release
+    volumes:
+      - ./config.production.yaml:/config.production.yaml  # 挂载配置文件
+
+  fuck-the-world-mysql:
+    image: mysql:8.0.31
+    container_name: fuck-the-world-mysql
+    restart: always
+    networks:
+      - fuck-the-world-network
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_DATABASE: "fuck_the_world_db_dev"
+      MYSQL_USER: "herzorf"
+      MYSQL_PASSWORD: "123456"
+    volumes:
+      - fuck-the-world-volume:/var/lib/mysql  # 数据持久化
+
+networks:
+  fuck-the-world-network:
+    driver: bridge
+
+volumes:
+  fuck-the-world-volume:
+    driver: local

@@ -21,7 +21,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /fuck-the-world
 FROM alpine:latest
 
 # 设置环境变量
-ENV APP_ENV=production
+ENV APP_ENV=production \
+    GIN_MOD=release
 # 设置工作目录
 WORKDIR /
 
