@@ -20,7 +20,15 @@ func Connect() {
 	dbname := viper.GetString("database.dbname")
 	dsnRoot := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port, dbname)
 	log.Println(dsnRoot)
-	db, err := gorm.Open(mysql.Open(dsnRoot), &gorm.Config{})
+	var err error
+	for i := 0; i < 5; i++ { // 最多尝试 5 次
+		DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		if err == nil {
+			break // 连接成功
+		}
+		log.Println(i+1,"数据库连接失败, 重试中...", err)
+		time.Sleep(5 * time.Second) // 等待 5 秒再试
+	}
 	unit.HandleError("数据库连接失败", err)
 	DB = db
 	sqlDB, err := db.DB()
