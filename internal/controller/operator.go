@@ -122,6 +122,7 @@ func QueryOperatorList(c *gin.Context) {
 		query = query.Where("username LIKE ?", "%"+body.Username+"%")
 	}
 	query.Count(&total)
+	query = query.Order("created_at DESC")
 	query = query.Offset((body.PageNo - 1) * body.PageSize).Limit(body.PageSize)
 	if err := query.Select("id, username, role, updated_at, is_active").Find(&users).Error; err != nil {
 		unit.RespondJSON(c, http.StatusInternalServerError, "查询用户失败", nil)
