@@ -43,13 +43,15 @@ func New() *gin.Engine {
 	{
 		authGroup.Use(middleware.AuthMiddleware())
 		authGroup.POST("/sendEmail", controller.SendEmail)
+		//用户相关接口
+		SetupUserRoutes(authGroup.Group("/user"))
 	}
 	//需要登录和管理员权限的接口
 	authAdminGroup := r.Group("/api")
 	{
 		authAdminGroup.Use(middleware.AuthMiddleware(), middleware.AuthAdminMiddleWare())
-		operateGroup := authAdminGroup.Group("/operator")
-		SetupUserRoutes(operateGroup)
+		//操作员相关接口
+		SetupOperatorRoutes(authAdminGroup.Group("/operator"))
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

@@ -12,17 +12,19 @@ var Secret = []byte("fuck-the-world")
 
 func GenerateJWT(user model.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userId": user.ID,
-		"role":   user.Role,
-		"exp":    time.Now().Add(time.Hour * 4).Unix(), // 过期时间 1 小时
+		"userId":   user.ID,
+		"username": user.Username,
+		"role":     user.Role,
+		"exp":      time.Now().Add(time.Hour * 4).Unix(), // 过期时间 1 小时
 	})
 
 	return token.SignedString(Secret)
 }
 
 type JwtInfo struct {
-	UserID uint
-	Role   string
+	UserID   uint
+	Role     string
+	Username string
 }
 
 func ParseJWT(tokenString string) (JwtInfo, error) {
@@ -30,8 +32,9 @@ func ParseJWT(tokenString string) (JwtInfo, error) {
 		return Secret, nil // 返回密钥
 	}, jwt.WithoutClaimsValidation())
 	var jInfo = JwtInfo{
-		UserID: 0,
-		Role:   "",
+		UserID:   0,
+		Role:     "",
+		Username: "",
 	}
 	if err != nil {
 		return jInfo, fmt.Errorf("无效token")
@@ -39,6 +42,7 @@ func ParseJWT(tokenString string) (JwtInfo, error) {
 
 	if claims, ok := token.Claims.(*jwt.MapClaims); ok && token.Valid {
 		userIDFloat, ok := (*claims)["userId"].(float64)
+		username, ok := (*claims)["username"]
 		if !ok {
 			return jInfo, fmt.Errorf("userId 字段解析失败")
 		}
@@ -58,6 +62,7 @@ func ParseJWT(tokenString string) (JwtInfo, error) {
 		}
 		jInfo.UserID = uint(userIDFloat)
 		jInfo.Role = role.(string)
+		jInfo.Username = username.(string)
 		return jInfo, nil
 	} else {
 		log.Println("token无效载体", token.Valid)

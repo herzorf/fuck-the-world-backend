@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupUserRoutes(router *gin.RouterGroup) {
+func SetupOperatorRoutes(router *gin.RouterGroup) {
 	router.POST("/createOperator", controller.CreateOperator)
 	router.POST("/deleteOperator", controller.DeleteOperator)
 	router.POST("/queryOperatorList", controller.QueryOperatorList)
