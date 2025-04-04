@@ -6,6 +6,7 @@ import (
 	"fuck-the-world/unit"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 func CreateOperator(c *gin.Context) {
@@ -111,13 +112,12 @@ func QueryOperatorList(c *gin.Context) {
 	type User struct {
 		ID        uint   `json:"id"`
 		Username  string `json:"username"`
-		Role      string `json:"role"`
 		UpdatedAt string `json:"updatedAt"`
 		IsActive  *bool  `json:"isActive"`
 	}
-	var users []User
+	var users []model.User
 	var total int64
-	var query = database.DB.Model(&model.User{}).Where("is_deleted = ?", false)
+	var query = database.DB.Model(&model.User{}).Where("is_deleted = ? AND role= ?", false, model.RoleOperator)
 	if len(body.Username) > 0 {
 		query = query.Where("username LIKE ?", "%"+body.Username+"%")
 	}
@@ -127,8 +127,18 @@ func QueryOperatorList(c *gin.Context) {
 		unit.RespondJSON(c, http.StatusInternalServerError, "查询用户失败", nil)
 		return
 	}
+	var responseUsers = make([]User, 0)
+	for i := range users {
+		responseUsers = append(responseUsers, User{
+			ID:        users[i].ID,
+			Username:  users[i].Username,
+			UpdatedAt: users[i].UpdatedAt.Format(time.DateTime),
+			IsActive:  users[i].IsActive,
+		})
+
+	}
 	unit.RespondJSON(c, http.StatusOK, "", gin.H{
 		"total": total,
-		"list":  users,
+		"list":  responseUsers,
 	})
 }
