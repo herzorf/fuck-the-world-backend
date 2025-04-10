@@ -7,4 +7,7 @@ import (
 
 func setMapRoutes(router *gin.RouterGroup) {
 	router.POST("createMap", controller.CreateMap)
+	router.POST("queryMapList", controller.QueryMapList)
+	router.POST("deleteMap", controller.DeleteMap)
+	router.POST("updateMap", controller.UpdateMap)
 }

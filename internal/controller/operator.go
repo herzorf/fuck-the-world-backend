@@ -100,7 +100,7 @@ func UpdateOperator(c *gin.Context) {
 func QueryOperatorList(c *gin.Context) {
 	type queryBodyParams struct {
 		PageNo   int    `json:"pageNo" binding:"gte=1"`
-		PageSize int    `json:"pageSize" binding:"gte=1,lte=100"`
+		PageSize int    `json:"pageSize" binding:"gte=1"`
 		Username string `json:"username"`
 	}
 	var body queryBodyParams
