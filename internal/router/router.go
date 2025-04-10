@@ -42,6 +42,7 @@ func New() *gin.Engine {
 	authGroup := r.Group("/api")
 	{
 		authGroup.Use(middleware.AuthMiddleware())
+		setMapRoutes(authGroup.Group("/map"))
 		authGroup.POST("/sendEmail", controller.SendEmail)
 		//用户相关接口
 		SetupUserRoutes(authGroup.Group("/user"))
