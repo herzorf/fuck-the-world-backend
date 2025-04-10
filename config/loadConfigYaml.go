@@ -1,7 +1,7 @@
 package config
 
 import (
-	"fuck-the-world/unit"
+	"fuck-the-world/utils"
 	"github.com/spf13/viper"
 	"os"
 )
@@ -15,6 +15,6 @@ func LoadConfigYaml() {
 	viper.AddConfigPath("./")
 	err := viper.ReadInConfig()
 	if err != nil {
-		unit.HandleError("viper 读取错误", err)
+		utils.HandleError("viper 读取错误", err)
 	}
 }

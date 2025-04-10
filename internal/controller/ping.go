@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"fuck-the-world/unit"
+	"fuck-the-world/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func Ping(c *gin.Context) {
-	unit.RespondJSON(c, http.StatusOK, "pong", nil)
+	utils.RespondJSON(c, http.StatusOK, "pong", nil)
 }

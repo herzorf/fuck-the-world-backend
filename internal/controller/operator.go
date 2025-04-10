@@ -3,7 +3,7 @@ package controller
 import (
 	"fuck-the-world/database"
 	"fuck-the-world/internal/model"
-	"fuck-the-world/unit"
+	"fuck-the-world/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -13,20 +13,20 @@ func CreateOperator(c *gin.Context) {
 	var user model.User
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		unit.RespondJSON(c, http.StatusBadRequest, "参数绑定失败", nil)
+		utils.RespondJSON(c, http.StatusBadRequest, "参数绑定失败", nil)
 		return
 	}
 	if len(user.Username) == 0 || len(user.Password) == 0 {
-		unit.RespondJSON(c, http.StatusBadRequest, "用户名或密码不能为空", nil)
+		utils.RespondJSON(c, http.StatusBadRequest, "用户名或密码不能为空", nil)
 		return
 	}
 	var existingUser model.User
 	if err := database.DB.Where("username = ?", user.Username).First(&existingUser).Error; err == nil {
-		unit.RespondJSON(c, http.StatusBadRequest, "用户已存在", nil)
+		utils.RespondJSON(c, http.StatusBadRequest, "用户已存在", nil)
 		return
 	}
 	if err := user.HashPassword(); err != nil {
-		unit.RespondJSON(c, http.StatusInternalServerError, "密码加密失败", nil)
+		utils.RespondJSON(c, http.StatusInternalServerError, "密码加密失败", nil)
 		return
 	}
 	newUser := model.User{
@@ -36,66 +36,66 @@ func CreateOperator(c *gin.Context) {
 		Role:     model.RoleOperator,
 	}
 	if err := database.DB.Create(&newUser).Error; err != nil {
-		unit.RespondJSON(c, http.StatusInternalServerError, "创建用户失败", nil)
+		utils.RespondJSON(c, http.StatusInternalServerError, "创建用户失败", nil)
 		return
 	}
-	unit.RespondJSON(c, http.StatusOK, "创建用户成功", nil)
+	utils.RespondJSON(c, http.StatusOK, "创建用户成功", nil)
 }
 
 func DeleteOperator(c *gin.Context) {
 	var user model.User
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		unit.RespondJSON(c, http.StatusBadRequest, "参数绑定失败", nil)
+		utils.RespondJSON(c, http.StatusBadRequest, "参数绑定失败", nil)
 		return
 	}
 	if user.ID == 0 {
-		unit.RespondJSON(c, http.StatusBadRequest, "用户ID不能为空", nil)
+		utils.RespondJSON(c, http.StatusBadRequest, "用户ID不能为空", nil)
 		return
 	}
 	var existingUser model.User
 	if err := database.DB.Where("id = ?", user.ID).First(&existingUser).Error; err != nil {
-		unit.RespondJSON(c, http.StatusBadRequest, "用户不存在", nil)
+		utils.RespondJSON(c, http.StatusBadRequest, "用户不存在", nil)
 		return
 	}
 	if *existingUser.IsDeleted == true {
-		unit.RespondJSON(c, http.StatusBadRequest, "用户已删除", nil)
+		utils.RespondJSON(c, http.StatusBadRequest, "用户已删除", nil)
 		return
 	}
 	*existingUser.IsDeleted = true
 	*existingUser.IsActive = false
 	if err := database.DB.Save(&existingUser).Error; err != nil {
-		unit.RespondJSON(c, http.StatusInternalServerError, "删除用户失败", nil)
+		utils.RespondJSON(c, http.StatusInternalServerError, "删除用户失败", nil)
 		return
 	}
-	unit.RespondJSON(c, http.StatusOK, "删除用户成功", nil)
+	utils.RespondJSON(c, http.StatusOK, "删除用户成功", nil)
 }
 func UpdateOperator(c *gin.Context) {
 	var user model.User
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		unit.RespondJSON(c, http.StatusBadRequest, "参数绑定失败", nil)
+		utils.RespondJSON(c, http.StatusBadRequest, "参数绑定失败", nil)
 		return
 	}
 	if user.ID == 0 {
-		unit.RespondJSON(c, http.StatusBadRequest, "用户id不能为空", nil)
+		utils.RespondJSON(c, http.StatusBadRequest, "用户id不能为空", nil)
 		return
 	}
 	var existingUser model.User
 	if err := database.DB.Where("id = ?", user.ID).First(&existingUser).Error; err != nil {
-		unit.RespondJSON(c, http.StatusBadRequest, "用户不存在", nil)
+		utils.RespondJSON(c, http.StatusBadRequest, "用户不存在", nil)
 		return
 	}
 	if *existingUser.IsDeleted == true {
-		unit.RespondJSON(c, http.StatusBadRequest, "用户已删除", nil)
+		utils.RespondJSON(c, http.StatusBadRequest, "用户已删除", nil)
 		return
 	}
 
 	if err := database.DB.Model(&user).Where("id = ?", user.ID).Update("is_active", user.IsActive).Error; err != nil {
-		unit.RespondJSON(c, http.StatusInternalServerError, "修改用户失败", nil)
+		utils.RespondJSON(c, http.StatusInternalServerError, "修改用户失败", nil)
 		return
 	}
-	unit.RespondJSON(c, http.StatusOK, "修改用户成功", nil)
+	utils.RespondJSON(c, http.StatusOK, "修改用户成功", nil)
 }
 func QueryOperatorList(c *gin.Context) {
 	type queryBodyParams struct {
@@ -106,7 +106,7 @@ func QueryOperatorList(c *gin.Context) {
 	var body queryBodyParams
 	err := c.ShouldBindJSON(&body)
 	if err != nil {
-		unit.RespondJSON(c, http.StatusBadRequest, "参数绑定失败", nil)
+		utils.RespondJSON(c, http.StatusBadRequest, "参数绑定失败", nil)
 		return
 	}
 	type User struct {
@@ -125,7 +125,7 @@ func QueryOperatorList(c *gin.Context) {
 	query = query.Order("created_at DESC")
 	query = query.Offset((body.PageNo - 1) * body.PageSize).Limit(body.PageSize)
 	if err := query.Select("id, username, role, updated_at, is_active").Find(&users).Error; err != nil {
-		unit.RespondJSON(c, http.StatusInternalServerError, "查询用户失败", nil)
+		utils.RespondJSON(c, http.StatusInternalServerError, "查询用户失败", nil)
 		return
 	}
 	var responseUsers = make([]User, 0)
@@ -138,7 +138,7 @@ func QueryOperatorList(c *gin.Context) {
 		})
 
 	}
-	unit.RespondJSON(c, http.StatusOK, "", gin.H{
+	utils.RespondJSON(c, http.StatusOK, "", gin.H{
 		"total": total,
 		"list":  responseUsers,
 	})

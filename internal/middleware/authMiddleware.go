@@ -2,7 +2,7 @@ package middleware
 
 import (
 	FTWJwj "fuck-the-world/internal/pkg/jwt"
-	"fuck-the-world/unit"
+	"fuck-the-world/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -12,13 +12,13 @@ func AuthMiddleware() gin.HandlerFunc {
 		// 获取 Authorization 头部
 		tokenString := c.GetHeader("Authorization")
 		if len(tokenString) == 0 {
-			unit.RespondJSON(c, http.StatusUnauthorized, "未登陆", nil)
+			utils.RespondJSON(c, http.StatusUnauthorized, "未登陆", nil)
 			c.Abort()
 			return
 		}
 		jInfo, err := FTWJwj.ParseJWT(tokenString)
 		if err != nil {
-			unit.RespondJSON(c, http.StatusUnauthorized, err.Error(), nil)
+			utils.RespondJSON(c, http.StatusUnauthorized, err.Error(), nil)
 			c.Abort()
 			return
 		}

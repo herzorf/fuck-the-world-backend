@@ -5,7 +5,7 @@ import (
 	"fuck-the-world/database"
 	"fuck-the-world/internal/model"
 	"fuck-the-world/internal/pkg/email"
-	"fuck-the-world/unit"
+	"fuck-the-world/utils"
 	"github.com/gin-gonic/gin"
 	"math/big"
 	"net/http"
@@ -27,8 +27,8 @@ func SendEmail(c *gin.Context) {
 	var aimEmail = &Email{}
 	err := c.ShouldBindJSON(aimEmail)
 	if err != nil {
-		unit.HandleError("sendEmail接口数据读取失败", err)
-		unit.RespondJSON(c, http.StatusBadRequest, "数据读取失败", nil)
+		utils.HandleError("sendEmail接口数据读取失败", err)
+		utils.RespondJSON(c, http.StatusBadRequest, "数据读取失败", nil)
 		return
 	}
 	code, _ := generateCode(6)
@@ -37,16 +37,16 @@ func SendEmail(c *gin.Context) {
 		Code:  code,
 	}).Error
 	if err != nil {
-		unit.HandleError("sendEmail接口数据库写入失败", err)
-		unit.RespondJSON(c, http.StatusInternalServerError, "数据库写入失败", nil)
+		utils.HandleError("sendEmail接口数据库写入失败", err)
+		utils.RespondJSON(c, http.StatusInternalServerError, "数据库写入失败", nil)
 		return
 	}
 	err = email.SendCode(aimEmail.Email, code)
 	if err != nil {
-		unit.HandleError("sendEmail接口发送邮件失败", err)
-		unit.RespondJSON(c, http.StatusInternalServerError, "发送邮件失败", nil)
+		utils.HandleError("sendEmail接口发送邮件失败", err)
+		utils.RespondJSON(c, http.StatusInternalServerError, "发送邮件失败", nil)
 	} else {
-		unit.RespondJSON(c, http.StatusOK, "发送邮件成功", nil)
+		utils.RespondJSON(c, http.StatusOK, "发送邮件成功", nil)
 	}
 }
 

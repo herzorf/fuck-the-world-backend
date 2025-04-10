@@ -42,9 +42,12 @@ func ParseJWT(tokenString string) (JwtInfo, error) {
 
 	if claims, ok := token.Claims.(*jwt.MapClaims); ok && token.Valid {
 		userIDFloat, ok := (*claims)["userId"].(float64)
-		username, ok := (*claims)["username"]
 		if !ok {
 			return jInfo, fmt.Errorf("userId 字段解析失败")
+		}
+		username, ok := (*claims)["username"]
+		if !ok {
+			return jInfo, fmt.Errorf("username 字段解析失败")
 		}
 		expFloat, ok := (*claims)["exp"].(float64)
 		if !ok {

@@ -4,7 +4,7 @@ import (
 	"fuck-the-world/database"
 	"fuck-the-world/internal/pkg/email"
 	"fuck-the-world/internal/router"
-	"fuck-the-world/unit"
+	"fuck-the-world/utils"
 	"github.com/spf13/cobra"
 	"log"
 )
@@ -32,7 +32,7 @@ func Run() {
 			} else {
 				err := email.SendCode(args[0], "123456")
 				if err != nil {
-					unit.HandleError("sendEmail接口发送邮件失败", err)
+					utils.HandleError("sendEmail接口发送邮件失败", err)
 				}
 			}
 		},

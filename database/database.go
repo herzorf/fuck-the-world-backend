@@ -2,7 +2,7 @@ package database
 
 import (
 	"fmt"
-	"fuck-the-world/unit"
+	"fuck-the-world/utils"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -32,14 +32,14 @@ func Connect() {
 		log.Println(i+1, "数据库连接失败, 重试中...", error)
 		time.Sleep(5 * time.Second) // 等待 5 秒再试
 	}
-	unit.HandleError("数据库连接5次失败", error)
+	utils.HandleError("数据库连接5次失败", error)
 	sqlDB, err := DB.DB()
 	if err != nil {
 		sqlDB.SetMaxIdleConns(10)
 		sqlDB.SetMaxOpenConns(100)
 		sqlDB.SetConnMaxLifetime(time.Minute * 30)
 	} else {
-		unit.HandleError("获取数据库连接池失败", err)
+		utils.HandleError("获取数据库连接池失败", err)
 	}
 
 }
